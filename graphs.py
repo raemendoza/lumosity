@@ -17,6 +17,7 @@ ages_old = ['50–59', '60–69', '70–79']
 genders = ['male', 'female']
 ethnicities = ['white', 'black', 'hispanic', 'asian', 'other']
 sleep_vals = [5, 6, 7, 8, 9]
+mood_vals = [-2, -1, 0, 1, 2]
 
 df['hour'] = df['hour'].astype(int)
 df['weekday'] = pd.Categorical(df['weekday'], weekdays, ordered=True)
@@ -25,7 +26,9 @@ df['season'] = pd.Categorical(df['season'], seasons, ordered=True)
 df['agegroup'] = pd.Categorical(df['agegroup'], ages, ordered=True)
 df['gender'] = pd.Categorical(df['gender'], genders, ordered=True)
 df['ethnicity'] = pd.Categorical(df['ethnicity'], ethnicities, ordered=True)
-df['sleep_cat'] = pd.Categorical(df['sleep'].round(), sleep_vals, ordered=True)
+df['mood'] = df['mood'].astype(int)
+df['sleep'] = df['sleep'].astype(int)
+
 
 plt.rcParams['font.family'] = 'Times New Roman'
 
@@ -143,10 +146,9 @@ def plot_timeline(data=df):
 
 def plot_hour_mood(data=df):
     gender_stats = _agg_se(data, ['gender', 'hour'], 'mood')
-    sleep_hour_stats = _agg_se(data, ['sleep_cat', 'hour'], 'mood')
+    sleep_hour_stats = _agg_se(data, ['sleep', 'hour'], 'mood')
 
     fig, axes = plt.subplots(1, 2, figsize=(14, 6))
-
     # Panel A: Hour × Gender
     ax = axes[0]
     _band_plot(axes[0], gender_stats, gender_colors.keys(), gender_colors.values(), str.capitalize)
@@ -178,7 +180,7 @@ def plot_hour_mood(data=df):
 
 
 def plot_week_mood(data=df):
-    sleep_wd_stats = _agg_se(data, ['sleep_cat', 'weekday'], 'mood', ci=True)
+    sleep_wd_stats = _agg_se(data, ['sleep', 'weekday'], 'mood', ci=True)
     age_wd_stats = _agg_se(data[data['agegroup'].isin(
         ages_young + ages_old)], ['agegroup', 'weekday'], 'mood', ci=True)
 

@@ -1,7 +1,12 @@
 import pandas as pd
 
 # Load the original CSV
-df = pd.read_csv("new_data.csv")
+df = pd.read_csv("data.csv")
+
+# Rename quality to sleep, change mapping to hours
+df = df.rename(columns={'quality': 'sleep'})
+sleep_map = {-2: 5, -1: 6, 0: 7, 1: 8, 2: 9}
+df['sleep'] = df['sleep'].map(sleep_map)
 
 # Clean-up and process demographic data
 age_counts = df['agegroup'].value_counts()
