@@ -80,14 +80,16 @@ Since we cannot disclose the dataset, the file `data_format.csv` provides an exa
 | Variable | Type       | Values|
 | -------- | ---------  | ----- |
 | `mood`   | Ordinal / Likert| `-2`, `-1`, `0`, `1`, `2`
-| `sleep`  | Ordinal / Ratio |  `5`, `6`, `7`, `8`, `9` 
+| `sleep`*  | Ordinal / Ratio |  `5`, `6`, `7`, `8`, `9` 
 | `hour`   | Categorical    | `0`, `1`, `2`, `3`, . . .  ,`23`      
 | `weekday`| Categorical     | `Mon`, `Tues`, `Wed`, `Thurs`, `Fri`, `Sat`, `Sun` 
 | `season` | Categorical     | `winter`, `spring`, `summer`, `fall`
-| `agegroup`*| Categorical    | `20–29`, `30–39`, `40–49`, `50–59`, `60–69`, `70–79`
+| `agegroup`**| Categorical    | `20–29`, `30–39`, `40–49`, `50–59`, `60–69`, `70–79`
 | `gender`  | Categorical   | `male`, `female`
-| `ethnicity`**| Categorical   | `white`, `black`, `hispanic`, `asian`, `other`
+| `ethnicity`***| Categorical   | `white`, `black`, `hispanic`, `asian`, `other`
 
 Columns not relevant to analysis are not shown in the **Analyzed Columns**.\
-*`agegroup` was re-aggregated to decades, where groups `[15,20)`, `[80,85)`, and `[85,90]` were excluded due to low sample sizes and not comprising a complete decade.\
-**`ethnicity` excluded the `pacific_islander` and `native_american` groups due to low sample sizes\
+* `sleep` is formerly `quality`
+**`agegroup` was re-aggregated to decades, where groups `[15,20)`, `[80,85)`, and `[85,90]` were excluded due to low sample sizes and not comprising a complete decade.\
+***`ethnicity` excluded the `pacific_islander` and `native_american` groups due to low sample sizes\
+
