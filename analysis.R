@@ -37,10 +37,10 @@ df$season    <- factor(df$season,
 # Descriptive Statistics of Variables (Raw Data)
 # ============================================================
 
-new_variable_list = c('gender', 'agegroup', 'ethnicity', 'hour', 'weekday',
-                  'mood', 'sleep', 'season')
+old_variable_list = c('gender', 'agegroup', 'ethnicity', 'hour', 'weekday',
+                      'mood', 'quality')
 
-for (var in new_variable_list) {
+for (var in old_variable_list) {
   cat("\n=============", var, "===========\n")
   print(format(table(df_og[[var]]), big.mark = ","))
   print(round(prop.table(table(df_og[[var]]))*100, 1))
@@ -50,10 +50,10 @@ for (var in new_variable_list) {
 # Descriptive Statistics of Variables
 # ============================================================
 
-old_variable_list = c('gender', 'agegroup', 'ethnicity', 'hour', 'weekday',
-                      'mood', 'quality')
+new_variable_list = c('gender', 'agegroup', 'ethnicity', 'hour', 'weekday',
+                      'mood', 'sleep', 'season')
 
-for (var in variable_list) {
+for (var in new_variable_list) {
   cat("\n=============", var, "===========\n")
   print(format(table(df[[var]]), big.mark = ","))
   print(round(prop.table(table(df[[var]]))*100, 1))
