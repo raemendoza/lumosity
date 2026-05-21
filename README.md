@@ -67,7 +67,7 @@ Since we cannot disclose the dataset, the file `data_format.csv` provides an exa
 | Variable | Type       | Values|
 | -------- | ---------  | ----- |
 | `mood`   | Ordinal / Likert| `-2`, `-1`, `0`, `1`, `2`
-| `sleep`  | Ordinal / Ratio |  `≤5`, `6`, `7`, `8`, `9+` 
+| `quality` | Ordinal |  `-2`, `-1`, `0`, `1`, `2` 
 | `hour`   | Categorical    | `0`, `1`, `2`, `3`, . . .  ,`23`      
 | `weekday`| Categorical     | `Mon`, `Tues`, `Wed`, `Thurs`, `Fri`, `Sat`, `Sun` 
 | `month`  | Categorical     | `Jan`, `Feb`, `Mar`, `Jun`, `Jul`, `Aug`, `Sep`, `Oct`, `Nov`, `Dec`
@@ -80,7 +80,7 @@ Since we cannot disclose the dataset, the file `data_format.csv` provides an exa
 | Variable | Type       | Values|
 | -------- | ---------  | ----- |
 | `mood`   | Ordinal / Likert| `-2`, `-1`, `0`, `1`, `2`
-| `sleep`  | Ordinal / Ratio |  `≤5`, `6`, `7`, `8`, `9+` 
+| `sleep`  | Ordinal / Ratio |  `5`, `6`, `7`, `8`, `9` 
 | `hour`   | Categorical    | `0`, `1`, `2`, `3`, . . .  ,`23`      
 | `weekday`| Categorical     | `Mon`, `Tues`, `Wed`, `Thurs`, `Fri`, `Sat`, `Sun` 
 | `season` | Categorical     | `winter`, `spring`, `summer`, `fall`
