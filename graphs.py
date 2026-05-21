@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as stats
+from typing import Callable, Iterable
 
 # IMPORT DATA
 df = pd.read_csv('final_data.csv')
@@ -56,19 +57,15 @@ x_week = np.arange(-1, len(weekdays) + 1)
 x_ticks = np.arange(len(weekdays))
 
 
-def wrap168(series, pad_x):
+def wrap168(series: np.ndarray, pad_x: int) -> np.ndarray:
     return np.concatenate([series[-pad_x:], series])
 
 
-def wrap_week(series):
+def wrap_week(series: pd.Series | pd.DataFrame) -> pd.Series | pd.DataFrame:
     return pd.concat([series.iloc[[-1]], series, series.iloc[[0]]])
 
 
-def pad_series(ser):
-    return np.append(ser.values, ser.values[0])
-
-
-def _agg_se(data, group, col, ci=False):
+def _agg_se(data: pd.DataFrame, group: list[str], col: str, ci: bool = False) -> pd.DataFrame:
     s = data.groupby(group, observed=True)[col].agg(['mean', 'std', 'count'])
     s['se'] = s['std'] / np.sqrt(s['count'])
     if ci:
@@ -76,7 +73,7 @@ def _agg_se(data, group, col, ci=False):
     return s
 
 
-def _band_plot(ax, st, keys, colors, label_fn):
+def _band_plot(ax: plt.Axes, st: pd.DataFrame, keys: Iterable, colors: Iterable, label_fn: Callable) -> None:
     x = np.arange(25)
     for key, color in zip(keys, colors):
         s = st.loc[key].reindex(range(24))
@@ -86,7 +83,7 @@ def _band_plot(ax, st, keys, colors, label_fn):
         ax.fill_between(x, mean_pad - se_pad, mean_pad + se_pad, color=color, alpha=0.25)
 
 
-def _error_bar_week(ax, st, keys, colors, label_fn):
+def _error_bar_week(ax: plt.Axes, st: pd.DataFrame, keys: Iterable, colors: Iterable, label_fn: Callable) -> None:
     for key, color in zip(keys, colors):
         s = st.loc[key].reindex(weekdays)
         ax.errorbar(x_week, wrap_week(s['mean']), yerr=wrap_week(s['ci95']),
@@ -98,15 +95,8 @@ def _error_bar_week(ax, st, keys, colors, label_fn):
 
 def plot_timeline(data=df):
     full_index = pd.MultiIndex.from_product([weekdays, range(24)], names=['weekday', 'hour'])
-    mood_timeline = data.groupby(['weekday', 'hour'], observed=False)['mood'].mean().reindex(full_index)
-    sleep_timeline = data.groupby(['weekday', 'hour'], observed=False)['sleep'].mean().reindex(full_index)
-    mood_stats = (data.groupby(['weekday', 'hour'], observed=True)['mood'].agg(
-        ['mean', 'std', 'count']).reindex(full_index))
-    sleep_stats = data.groupby(['weekday', 'hour'], observed=True)['sleep'].agg(
-        ['mean', 'std', 'count']).reindex(full_index)
-
-    mood_se = mood_stats['std'] / np.sqrt(mood_stats['count'])
-    sleep_se = sleep_stats['std'] / np.sqrt(sleep_stats['count'])
+    mood_stats = _agg_se(data, ['weekday', 'hour'], 'mood').reindex(full_index)
+    sleep_stats = _agg_se(data, ['weekday', 'hour'], 'sleep').reindex(full_index)
 
     weekday_indices = [0, 2, 4, 6]
     weekday_positions = [12 + 24 * i for i in weekday_indices]
@@ -115,10 +105,10 @@ def plot_timeline(data=df):
     pad = 3
     x = np.arange(-pad, 168)
 
-    mood_y = wrap168(mood_timeline.values, pad)
-    mood_err = wrap168(mood_se.values, pad)
-    sleep_y = wrap168(sleep_timeline.values, pad)
-    sleep_err = wrap168(sleep_se.values, pad)
+    mood_y = wrap168(mood_stats['mean'].values, pad)
+    mood_err = wrap168(mood_stats['se'].values, pad)
+    sleep_y = wrap168(sleep_stats['mean'].values, pad)
+    sleep_err = wrap168(sleep_stats['se'].values, pad)
 
     fig, axes = plt.subplots(1, 2, figsize=(16, 6), sharex=True)
     axes[0].errorbar(x, mood_y, yerr=mood_err, fmt='-', color='black', ecolor='black', elinewidth=1.5, capsize=0,
@@ -128,8 +118,8 @@ def plot_timeline(data=df):
 
     axes[0].set_ylabel('Average Mood', fontsize=18)
     axes[1].set_ylabel('Average Sleep Duration (h)', fontsize=18)
-    axes[0].set_ylim(mood_timeline.mean() - 0.35 / 2, mood_timeline.mean() + 0.35 / 2)
-    axes[1].set_ylim(sleep_timeline.mean() - 0.80 / 2, sleep_timeline.mean() + 0.80 / 2)
+    axes[0].set_ylim(mood_stats['mean'].mean() - 0.35 / 2, mood_stats['mean'].mean() + 0.35 / 2)
+    axes[1].set_ylim(sleep_stats['mean'].mean() - 0.80 / 2, sleep_stats['mean'].mean() + 0.80 / 2)
 
     tick_positions = list(range(0, 169, 24))
     for ax in axes:
@@ -287,18 +277,10 @@ def plot_hour_sleep(data=df):
 
 
 def plot_week_sleep(data=df):
-    gender_wd_stats = data.groupby(['gender', 'weekday'], observed=True)['sleep'].agg(['mean', 'std', 'count'])
-    gender_wd_stats['se'] = gender_wd_stats['std'] / np.sqrt(gender_wd_stats['count'])
-    gender_wd_stats['ci95'] = gender_wd_stats['se'] * stats.t.ppf(0.975, gender_wd_stats['count'] - 1)
-
-    ethnicity_wd_stats = data.groupby(['ethnicity', 'weekday'], observed=True)['sleep'].agg(['mean', 'std', 'count'])
-    ethnicity_wd_stats['se'] = ethnicity_wd_stats['std'] / np.sqrt(ethnicity_wd_stats['count'])
-    ethnicity_wd_stats['ci95'] = ethnicity_wd_stats['se'] * stats.t.ppf(0.975, ethnicity_wd_stats['count'] - 1)
-
-    age_wd_stats = data[data['agegroup'].isin(ages_young + ages_old)].groupby(['agegroup', 'weekday'], observed=True)[
-        'sleep'].agg(['mean', 'std', 'count'])
-    age_wd_stats['se'] = age_wd_stats['std'] / np.sqrt(age_wd_stats['count'])
-    age_wd_stats['ci95'] = age_wd_stats['se'] * stats.t.ppf(0.975, age_wd_stats['count'] - 1)
+    gender_wd_stats = _agg_se(data, ['gender', 'weekday'], 'sleep', ci=True)
+    ethnicity_wd_stats = _agg_se(data, ['ethnicity', 'weekday'], 'sleep', ci=True)
+    age_wd_stats = _agg_se(data[data['agegroup'].isin(ages_young + ages_old)], ['agegroup', 'weekday'], 'sleep',
+                           ci=True)
 
     fig, axes = plt.subplots(2, 2, figsize=(14, 10))
     axes = axes.flatten()
