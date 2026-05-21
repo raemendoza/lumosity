@@ -89,7 +89,7 @@ Since we cannot disclose the dataset, the file `data_format.csv` provides an exa
 | `ethnicity`***| Categorical   | `white`, `black`, `hispanic`, `asian`, `other`
 
 Columns not relevant to analysis are not shown in the **Analyzed Columns**.\
-* `sleep` is formerly `quality`
+*`sleep` is formerly `quality`\
 **`agegroup` was re-aggregated to decades, where groups `[15,20)`, `[80,85)`, and `[85,90]` were excluded due to low sample sizes and not comprising a complete decade.\
 ***`ethnicity` excluded the `pacific_islander` and `native_american` groups due to low sample sizes\
 
