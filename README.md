@@ -28,6 +28,7 @@ Furthermore, these rhythms were strengthened by testing whether accounting for c
 For example, to test for the **24-hour rhythm of mood reports in users**, the following set of models were defined:
 ```mermaid
 flowchart LR
+%%{init: {"flowchart": {"diagramPadding": 125}}}%%
     A["mood ~ hour\n"]
     B["mood ~ hour\n+ agegroup + gender\n+ ethnicity + season + weekday\n"]
     C["mood ~ hour\n+ agegroup + gender\n+ ethnicity + season + weekday\n+ sleep\n"]
@@ -46,6 +47,7 @@ The third question involved performing various sets of Type III Two-Way ANOVAs, 
 For example, to test whether there was an interaction between **weekday and age on mood reports in users**, the following set of models were defined:
 
 ```mermaid
+%%{init: {"flowchart": {"diagramPadding": 125}}}%%
 flowchart LR
     A["sleep ~ weekday * agegroup\n"]
     B["sleep ~ weekday * agegroup\n+ gender + ethnicity\n+ season + hour\n"]
